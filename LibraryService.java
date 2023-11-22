@@ -35,7 +35,7 @@ public class LibraryService {
         if (role.equals("Admin")) {
             System.out.println("Welcome Admin!");
             LibraryCatalog catalog = new LibraryCatalog();
-            handleLibrarianActions(catalog);
+            handleLibrarianActions(catalog, role); // Pass the role as well
         } else if (role.equals("Reader")) {
             System.out.println("Hello Reader!");
         }
@@ -48,32 +48,65 @@ public class LibraryService {
         librarianCredentials.put(reader.getUsername(), reader);
     }
 
-    private static void handleLibrarianActions(LibraryCatalog catalog) {
-        int choice;
+    private static void handleLibrarianActions(LibraryCatalog catalog, String role) {
+        int choice = 0;
         do {
-            displayMenuOptions();
-            choice = scanner.nextInt();
-            scanner.nextLine();
-            switch (choice) {
-                case 1:
-                    addBook(catalog);
-                    break;
-                case 2:
-                    retrieveBooksFromDatabase();
-                    listBooks();
-                    break;
-                case 3:
-                    searchBooks(catalog.getBooks());
-                    break;
-                case 4:
-                    System.out.println("Exiting the system. Goodbye!");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
+            if (role.equals("Admin")) {
+                displayMenuOptions();
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                switch (choice) {
+                    case 1:
+                        addBook(catalog);
+                        break;
+                    case 2:
+                        retrieveBooksFromDatabase();
+                        listBooks();
+                        break;
+                    case 3:
+                        searchBooks(catalog.getBooks());
+                        break;
+                    case 4:
+                        System.out.println("Exiting the system. Goodbye!");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
+            } else if (role.equals("Reader")) {
+                System.out.println("Hello Reader!");
+                displayReaderOptions(); // Display reader-specific options
+                do {
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline character
+                    
+                    switch (choice) {
+                        case 2:
+                            retrieveBooksFromDatabase();
+                            listBooks();
+                            break;
+                        case 3:
+                            searchBooks(catalog.getBooks());
+                            break;
+                        case 4:
+                            System.out.println("Exiting the system. Goodbye!");
+                            return;
+                        default:
+                            System.out.println("Invalid choice. Please try again.");
+                            break;
+                    }
+                } while (choice != 4);
             }
         } while (choice != 4);
-        scanner.close();
+    }
+    
+    
+    private static void displayReaderOptions() {
+        System.out.println("Reader Options:");
+        System.out.println("List of Books [Press 2]");
+        System.out.println("Search Books  [Press 3]");
+        System.out.println("Exit          [Press 4]\n");
+        System.out.print("Enter your choice: ");
     }
 
     private static void retrieveBooksFromDatabase() {
@@ -291,8 +324,5 @@ public class LibraryService {
             e.printStackTrace();
         }
         return null;
-    }
-}
-        return null; // Return null in case of any error
     }
 }
