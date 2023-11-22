@@ -49,9 +49,10 @@ public class LibraryService {
     }
 
     private static void handleLibrarianActions(LibraryCatalog catalog, String role) {
-        int choice = 0;
+        int choice = -1;
         do {
             if (role.equals("Admin")) {
+                // Admin-specific actions
                 displayMenuOptions();
                 choice = scanner.nextInt();
                 scanner.nextLine();
@@ -74,33 +75,34 @@ public class LibraryService {
                         break;
                 }
             } else if (role.equals("Reader")) {
+                // Reader-specific actions
                 System.out.println("Hello Reader!");
-                displayReaderOptions(); // Display reader-specific options
-                do {
-                    choice = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline character
-                    
-                    switch (choice) {
-                        case 2:
-                            retrieveBooksFromDatabase();
-                            listBooks();
-                            break;
-                        case 3:
-                            searchBooks(catalog.getBooks());
-                            break;
-                        case 4:
-                            System.out.println("Exiting the system. Goodbye!");
-                            return;
-                        default:
-                            System.out.println("Invalid choice. Please try again.");
-                            break;
-                    }
-                } while (choice != 4);
+                displayReaderOptions();
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+                
+                switch (choice) {
+                    case 2:
+                        // Option 2: List Books
+                        retrieveBooksFromDatabase();
+                        listBooks();
+                        break;
+                    case 3:
+                        // Option 3: Search Books
+                        searchBooks(catalog.getBooks());
+                        break;
+                    case 4:
+                        // Option 4: Exit
+                        System.out.println("Exiting the system. Goodbye!");
+                        return;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
             }
         } while (choice != 4);
     }
-    
-    
+        
     private static void displayReaderOptions() {
         System.out.println("Reader Options:");
         System.out.println("List of Books [Press 2]");
@@ -199,7 +201,7 @@ public class LibraryService {
             }
         } else {
             System.out.println("User account does not exist.");
-            System.out.println("Are you an (Admin/Reader): Press A/R");
+            System.out.println("Are you an (Admin/Reader): [Press A/R]");
             String roleInput = scanner.nextLine().trim().toLowerCase();
 
             if (roleInput.equals("a")) {
