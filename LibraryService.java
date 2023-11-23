@@ -19,6 +19,7 @@ public class LibraryService {
 
 
     public static void main(String[] args) {
+        clearScreen();
         System.out.println("Welcome to the Library System!\n");
         String role = LoginManager.login();
 
@@ -50,26 +51,45 @@ public class LibraryService {
             displayAdminOptions();
             choice = scanner.nextInt();
             scanner.nextLine();
+            
+            clearScreen();
 
             switch (choice) {
                 case 1:
+                clearScreen();
                     addBook(catalog);
+                    waitForEnter();
                     break;
                 case 2:
+                clearScreen();
                     retrieveBooksFromDatabase();
                     listBooks();
+                    waitForEnter();
                     break;
                 case 3:
+                clearScreen();
                     searchBooks(catalog.getBooks());
+                    waitForEnter();
                     break;
                 case 4:
                     System.out.println("Exiting the system. Goodbye!");
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
+                    waitForEnter();
                     break;
             }
         } while (choice != 4);
+    }
+
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    private static void waitForEnter() {
+        System.out.println("Press Enter to continue...");
+        scanner.nextLine();
     }
 
     private static void handleReaderActions(LibraryCatalog catalog) {
@@ -79,25 +99,32 @@ public class LibraryService {
             choice = scanner.nextInt();
             scanner.nextLine();
 
+            clearScreen();
+
             switch (choice) {
                 case 2:
                     retrieveBooksFromDatabase();
                     listBooks();
+                    waitForEnter();
                     break;
                 case 3:
                     searchBooks(catalog.getBooks());
+                    waitForEnter();
                     break;
                 case 4:
                     System.out.println("Exiting the system. Goodbye!");
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
+                    waitForEnter();
                     break;
+                    
             }
         } while (choice != 4);
     }
 
     private static void displayAdminOptions() {
+        clearScreen();
         System.out.println("Library Catalog and Book Checkout System\n");
         System.out.println("Add Book      [Press 1]");
         System.out.println("List of Books [Press 2]");
@@ -107,6 +134,7 @@ public class LibraryService {
     }
 
     private static void displayReaderOptions() {
+        clearScreen();
         System.out.println("Library Catalog and Book Checkout System\n");
         System.out.println("List of Books [Press 2]");
         System.out.println("Search Books  [Press 3]");
@@ -180,7 +208,7 @@ public class LibraryService {
         if (books.isEmpty()) {
             System.out.println("No books available in the catalog.");
         } else {
-            System.out.println("Books in Catalog:");
+            System.out.println("Books in Catalog:\n");
             for (Book book : books) {
                 System.out.println(book.getTitle() + " by " + book.getAuthor() +
                         (book.isAvailable() ? " (Available)" : " (Checked Out)"));
