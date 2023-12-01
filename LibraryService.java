@@ -224,7 +224,138 @@ public class LibraryService {
     }
 
     private static void searchBooks(ArrayList<Book> books) {
-        // Implement logic to search books based on title, author, or genre
-        // Display search results using listBooks method
+    System.out.println("Searching Book by:\n");
+    System.out.println("Enter Title      [Press 1]");
+    System.out.println("Enter Author     [Press 2]");
+    System.out.println("Enter Genre      [Press 3]");
+    System.out.println("Back to Menu     [Press 4]\n");
+
+    System.out.print("Enter your choice: ");
+    int choice = scanner.nextInt();
+    scanner.nextLine();
+
+    clearScreen();
+
+    switch (choice) {
+        case 1:
+            System.out.print("Enter Title: ");
+            String titleSearch = scanner.nextLine();
+            displayBooks(searchByTitle(titleSearch, books));
+            break;
+        case 2:
+            System.out.print("Enter Author: ");
+            String authorSearch = scanner.nextLine();
+            displayBooks(searchByAuthor(authorSearch, books));
+            break;
+        case 3:
+            System.out.print("Enter Genre: ");
+            String genreSearch = scanner.nextLine();
+            displayBooks(searchByGenre(genreSearch, books));
+            break;
+        case 4:
+            System.out.println("Returning to Menu...");
+            break;
+        default:
+            System.out.println("Invalid choice.");
+            break; }
     }
+
+    private static ArrayList<Book> searchByTitle(String title, ArrayList<Book> books) {
+        ArrayList<Book> foundBooks = new ArrayList<>();
+        String query = "SELECT * FROM Booktbl WHERE Title = ?";
+        
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, title);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String bookTitle = resultSet.getString("Title");
+                    String author = resultSet.getString("Author");
+                    String genre = resultSet.getString("Genre");
+                    int quantity = resultSet.getInt("Quantity");
+                    boolean available = resultSet.getBoolean("Availability");
+    
+                    Book book = new Book(bookTitle, author);
+                    book.setGenre(genre);
+                    book.setQuantity(quantity);
+                    book.setAvailable(available);
+                    foundBooks.add(book);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return foundBooks;
+    }
+    
+    private static ArrayList<Book> searchByAuthor(String author, ArrayList<Book> books) {
+        ArrayList<Book> foundBooks = new ArrayList<>();
+        String query = "SELECT * FROM Booktbl WHERE Author = ?";
+        
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, author);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String bookTitle = resultSet.getString("Title");
+                    String bookAuthor = resultSet.getString("Author");
+                    String genre = resultSet.getString("Genre");
+                    int quantity = resultSet.getInt("Quantity");
+                    boolean available = resultSet.getBoolean("Availability");
+    
+                    Book book = new Book(bookTitle, bookAuthor);
+                    book.setGenre(genre);
+                    book.setQuantity(quantity);
+                    book.setAvailable(available);
+                    foundBooks.add(book);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return foundBooks;
+    }
+
+    private static ArrayList<Book> searchByGenre(String genre, ArrayList<Book> books) {
+        ArrayList<Book> foundBooks = new ArrayList<>();
+        String query = "SELECT * FROM Booktbl WHERE Genre = ?";
+        
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, genre);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String bookTitle = resultSet.getString("Title");
+                    String bookAuthor = resultSet.getString("Author");
+                    String bookGenre = resultSet.getString("Genre");
+                    int quantity = resultSet.getInt("Quantity");
+                    boolean available = resultSet.getBoolean("Availability");
+    
+                    Book book = new Book(bookTitle, bookAuthor);
+                    book.setGenre(bookGenre);
+                    book.setQuantity(quantity);
+                    book.setAvailable(available);
+                    foundBooks.add(book);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return foundBooks;
+    }
+
+    private static void displayBooks(ArrayList<Book> books) {
+    if (books.isEmpty()) {
+        System.out.println("No books found matching the search criteria.");
+    } else {
+        System.out.println("Books found:\n");
+        for (Book book : books) {
+            String availability = book.isAvailable() ? " (Available)" : " (Checked Out)";
+            System.out.println(book.getTitle() + " by " + book.getAuthor() + availability);
+        }
+    }
+}
 }
