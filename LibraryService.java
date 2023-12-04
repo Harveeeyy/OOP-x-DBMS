@@ -167,13 +167,12 @@ public class LibraryService {
         System.out.print("Enter book quantity: ");
         int quantity = scanner.nextInt();
         scanner.nextLine();
-
-        Book newBook = new Book(title, author);
-        newBook.setGenre(genre);
+    
+        Book newBook = new Book(title, author, genre); // Pass genre parameter to the Book constructor
         newBook.setQuantity(quantity);
         catalog.addBook(newBook);
         addBookToDatabase(newBook);
-    }
+    }    
 
     private static void addBookToDatabase(Book book) {
         String JDBC_URL = LoginManager.JDBC_URL;
