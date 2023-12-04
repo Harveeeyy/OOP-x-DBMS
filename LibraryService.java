@@ -235,12 +235,13 @@ public class LibraryService {
         } else {
             displayBooks(matchingBooks);
             System.out.println("\nUpdating book by:\n");
-            System.out.println("Update Title                     [T]");
-            System.out.println("Update Author                    [A]");
-            System.out.println("Update Genre                     [G]");
-            System.out.println("How many copies are checked out? [H]");
-            System.out.println("Delete Book?                     [D]");
-            System.out.println("Back to Menu                     [B]");
+            System.out.println("Update Title                      [T]");
+            System.out.println("Update Author                     [A]");
+            System.out.println("Update Genre                      [G]");
+            System.out.println("How many copies were checked out? [H]");
+            System.out.println("How many copies were added?       [P]");
+            System.out.println("Delete Book?                      [D]");
+            System.out.println("Back to Menu                      [B]");
             System.out.print("\nEnter your choice: ");
 
             String choice = scanner.nextLine().toUpperCase();
@@ -263,6 +264,9 @@ public class LibraryService {
                     break;
                 case "H":
                     updateCheckedOutCopies(title, author);
+                    break;
+                case "P":
+                    updateAddCopies(title, author);
                     break;
                 case "B":
                     System.out.println("Returning to Menu...");
@@ -394,7 +398,36 @@ public class LibraryService {
             int updatedRows = preparedStatement.executeUpdate();
     
             if (updatedRows > 0) {
-                System.out.println("Quantity updated successfully!");
+                System.out.println("Copies checked out successfully!");
+            } else {
+                System.out.println("No books found matching the search criteria.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void updateAddCopies(String title, String author) {
+        System.out.print("Enter the number of copies to add: ");
+        int copiesToAdd = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+    
+        addCopiesToBook(copiesToAdd, title, author);
+    }
+    
+    private static void addCopiesToBook(int copiesToAdd, String title, String author) {
+        String JDBC_URL = LoginManager.JDBC_URL;
+        String query = "UPDATE Booktbl SET Quantity = Quantity + ? WHERE Title = ? AND Author = ?";
+    
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, copiesToAdd);
+            preparedStatement.setString(2, title);
+            preparedStatement.setString(3, author);
+            int updatedRows = preparedStatement.executeUpdate();
+    
+            if (updatedRows > 0) {
+                System.out.println("Copies added successfully!");
             } else {
                 System.out.println("No books found matching the search criteria.");
             }
