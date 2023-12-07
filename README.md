@@ -4,7 +4,7 @@ Final Project requirement for Object Oriented Programming and Database Managemen
 
 
 # Library Catalog and Book Checkout System
-This project is a Java-based Library Management System actually named as "Library Catalog and Book Checkout System" designed to efficiently manage a library's resources, including books and user accounts. The system is built with a focus on enhancing the management of library items and user interactions while adhering to key principles of Object-Oriented Programming (OOP).
+This project is a Java-based Library Management System actually named as "Library Catalog and Book Checkout System" a console program designed to efficiently manage a library's resources, including books and user accounts. The system is built with a focus on enhancing the management of library items and user interactions while adhering to key principles of Object-Oriented Programming (OOP).
 
 
 # Functionalities
